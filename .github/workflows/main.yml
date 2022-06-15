@@ -6,21 +6,52 @@ jobs:
   build:
     name: Build libfat
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: ["Wii", "GameCube"]
     container: devkitpro/devkitppc:latest
 
     steps:
     - name: Checkout libfat-UStealth
       uses: actions/checkout@v2
       with:
-        repository: saulfabregwiivc/libfat
-        path: libfat
+        fetch-depth: 0
 
-    - name: Build libfat
-      run: make -C libogc PLATFORM=wii BUILD=wii_release
-      working-directory: libfat
+    - name: Build Wii
+      if: ${{ matrix.image == 'Wii' }}
+      run: |
+        make -C libogc PLATFORM=wii BUILD=wii_release    
 
-    - name: Upload artifacts
+    - name: Build GameCube
+      if: ${{ matrix.image == 'GameCube' }}
+      run: |
+        make -C libogc PLATFORM=cube BUILD=cube_release   
+      
+    - name: Copy Wii artifacts
+      if: ${{ matrix.image == 'Wii' }}
+      run: | 
+        mkdir -p dist/libfat-Wii
+        cp libogc/lib/wii/libfat.a dist/libfat-Wii
+
+    - name: Upload Wii artifacts
       uses: actions/upload-artifact@v2
-      with:
-        name: libFAT
-        path: /opt/devkitpro/libogc
+      if: ${{ matrix.image == 'Wii' }}
+      with: 
+        name: libfat-Wii
+        path: |
+         dist/libfat-Wii/
+
+    - name: Copy GameCube artifacts
+      if: ${{ matrix.image == 'GameCube' }}
+      run: | 
+        mkdir -p dist/libfat-Wii
+        cp libogc/lib/cube/libfat.a dist/libfat-GameCube
+
+    - name: Upload GameCube artifacts
+      uses: actions/upload-artifact@v2
+      if: ${{ matrix.image == 'GameCube' }}
+      with: 
+        name: libfat-GameCube
+        path: |
+         dist/libfat-GameCube/
+
