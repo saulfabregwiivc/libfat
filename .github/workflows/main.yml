@@ -44,7 +44,7 @@ jobs:
     - name: Copy GameCube artifacts
       if: ${{ matrix.image == 'GameCube' }}
       run: | 
-        mkdir -p dist/libfat-Wii
+        mkdir -p dist/libfat-GameCube
         cp libogc/lib/cube/libfat.a dist/libfat-GameCube
 
     - name: Upload GameCube artifacts
