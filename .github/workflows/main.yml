@@ -1,0 +1,26 @@
+name: libfat build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build libfat
+    runs-on: ubuntu-latest
+    container: devkitpro/devkitppc:latest
+
+    steps:
+    - name: Checkout libfat-UStealth
+      uses: actions/checkout@v2
+      with:
+        repository: saulfabregwiivc/libfat
+        path: libfat
+
+    - name: Build libfat
+      run: make ogc-install
+      working-directory: libfat
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: libFAT
+        path: /opt/devkitpro/libogc
