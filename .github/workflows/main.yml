@@ -16,7 +16,7 @@ jobs:
         path: libfat
 
     - name: Build libfat
-      run: make ogc-install
+      run: make -C libogc PLATFORM=wii BUILD=wii_release
       working-directory: libfat
 
     - name: Upload artifacts
